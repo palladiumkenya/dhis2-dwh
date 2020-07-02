@@ -40,4 +40,12 @@ app.listen(port, function() {
 	console.log('Server started on port ' + port);
 });
 
+var CronJob = require('cron').CronJob;
+var dhis2AnalyticsWorker = require('./workers/dhis2-analytics');
+var job = new CronJob('0 0 * * *', function() { // everyday at midnight
+	dhis2AnalyticsWorker.processDhis2Dwh();
+}, null, true, 'Africa/Nairobi');
+
+job.start();
+
 module.exports = app;

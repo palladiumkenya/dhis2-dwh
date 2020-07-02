@@ -1,33 +1,32 @@
 var seq = require('../config/database');
 var sequelize = seq.sequelize;
 var Sequelize = seq.Sequelize;
+var moment = require('moment');
 
 var Dhis2Data = sequelize.define('dhis2_data', {
 	id: { type: Sequelize.UUID, defaultValue: Sequelize.UUIDV4, primaryKey: true },
-	organisation_unit_id: { type: Sequelize.STRING },
-	organisation_unit_code: { type: Sequelize.STRING },
-	organisation_unit_level_1: { type: Sequelize.STRING },
-	organisation_unit_level_2: { type: Sequelize.STRING },
-	organisation_unit_level_3: { type: Sequelize.STRING },
-	organisation_unit_level_4: { type: Sequelize.STRING },
-	period: { type: Sequelize.STRING },
-	enrolled: { type: Sequelize.STRING },
-	start_art: { type: Sequelize.STRING },
-	on_art: { type: Sequelize.STRING },
-	on_ctx: { type: Sequelize.STRING },
-	created_at: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },
+	DHISOrgId: { type: Sequelize.STRING },
+	SiteCode: { type: Sequelize.STRING },
+	FacilityName: { type: Sequelize.STRING },
+	County: { type: Sequelize.STRING },
+	SubCounty: { type: Sequelize.STRING },
+	Ward: { type: Sequelize.STRING },
+	ReportMonth_Year: { type: Sequelize.STRING },
+	Enrolled_Total: { type: Sequelize.STRING },
+	StartedART_Total: { type: Sequelize.STRING },
+	CurrentOnART_Total: { type: Sequelize.STRING },
+	CTX_Total: { type: Sequelize.STRING },
 }, {
-	timestamps: false,
+	timestamps: true,
 	indexes: [
 		{ unique: true, fields: ['id'] },
-		{ unique: false, fields: ['organisation_unit_id'] },
-		{ unique: false, fields: ['organisation_unit_code'] },
-		{ unique: false, fields: ['organisation_unit_level_1'] },
-		{ unique: false, fields: ['organisation_unit_level_2'] },
-		{ unique: false, fields: ['organisation_unit_level_3'] },
-		{ unique: false, fields: ['organisation_unit_level_4'] },
-		{ unique: false, fields: ['period'] },
-	    { unique: false, fields: ['created_at'] }
+		{ unique: false, fields: ['DHISOrgId'] },
+		{ unique: false, fields: ['SiteCode'] },
+		{ unique: false, fields: ['FacilityName'] },
+		{ unique: false, fields: ['County'] },
+		{ unique: false, fields: ['SubCounty'] },
+		{ unique: false, fields: ['Ward'] },
+		{ unique: false, fields: ['ReportMonth_Year'] }
 	]
 });
 
@@ -35,7 +34,34 @@ Dhis2Data.sync();
 
 module.exports = {
 	find: function (options) {
-		options.order = [['created_at', 'DESC']];
+		options.order = [['updatedAt', 'DESC']];
 		return Dhis2Data.findAndCountAll(options);
+	},
+	create: function (body) {
+		var options = {
+			where: { DHISOrgId:body.DHISOrgId, ReportMonth_Year: body.ReportMonth_Year },
+			order: [['updatedAt', 'DESC']]
+		};
+		return Dhis2Data.findOne(options).then(function (dhis2Data) {
+			if(dhis2Data) {
+				body.updatedAt = moment().format("YYYY-MM-DD HH:mm:ss");
+				return dhis2Data.update(body);
+			} else {
+				return Dhis2Data.create(body);
+			}
+		});
+	},
+	update: function (body) {
+		if (body.id) {
+			return Dhis2Data.findById(body.id).then(function (dhis2Data) {
+				if(dhis2Data) {
+					body.updatedAt = moment().format("YYYY-MM-DD HH:mm:ss");
+					return dhis2Data.update(body);
+				} else {
+					return this.create(body);
+				}
+			});
+		}
+		return this.create(body);
 	}
 }

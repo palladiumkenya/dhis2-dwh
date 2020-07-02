@@ -1,4 +1,5 @@
 const DHIS2Data = require('../models/dhis2-data');
+const dhis2AnalyticsWorker = require('../workers/dhis2-analytics');
 
 module.exports = {
 	index(req, res) {
@@ -27,6 +28,7 @@ module.exports = {
 		});
 	},
 	reprocess(req, res) {
+		dhis2AnalyticsWorker.processDhis2Dwh();
 		res.status(200).json({
 			"status": "success"
 		});

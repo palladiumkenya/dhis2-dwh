@@ -6,16 +6,15 @@ var morgan = require('morgan')
 var path = require('path')
 var rfs = require('rotating-file-stream')
 var conf = require('dotenv').config();
-
-var port = 3000;
+var port = process.env.API_PORT;
 var app = express();
 var logDirectory = path.join(__dirname, 'logs')
 var router = require('./routes');
 
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory)
 var accessLogStream = rfs.createStream('access.log', { interval: '1d', compress: "gzip", path: logDirectory })
-app.use(morgan('combined', {stream: accessLogStream}))
 
+app.use(morgan('combined', {stream: accessLogStream}))
 app.use(function(req, res, next) {
 	res.header("Access-Control-Allow-Origin", "*");
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");

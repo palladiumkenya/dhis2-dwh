@@ -12,10 +12,10 @@ var Dhis2Data = sequelize.define('dhis2_data', {
 	SubCounty: { type: Sequelize.STRING },
 	Ward: { type: Sequelize.STRING },
 	ReportMonth_Year: { type: Sequelize.STRING },
-	Enrolled_Total: { type: Sequelize.STRING },
-	StartedART_Total: { type: Sequelize.STRING },
-	CurrentOnART_Total: { type: Sequelize.STRING },
-	CTX_Total: { type: Sequelize.STRING },
+	Enrolled_Total: { type: Sequelize.INTEGER },
+	StartedART_Total: { type: Sequelize.INTEGER },
+	CurrentOnART_Total: { type: Sequelize.INTEGER },
+	CTX_Total: { type: Sequelize.INTEGER },
 }, {
 	timestamps: true,
 	indexes: [

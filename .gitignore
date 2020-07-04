@@ -8,7 +8,6 @@ pids
 storage/uploads
 typings/
 vendor
-package-lock.json
 .env
 .eslintcache
 .grunt

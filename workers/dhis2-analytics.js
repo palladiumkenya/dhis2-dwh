@@ -4,9 +4,21 @@ var moment = require("moment");
 var DHIS2Data = require("../models/dhis2-data");
 
 module.exports = {
-    processDhis2Dwh() {
-        console.log("ProcessDhis2Dwh started at " + new Date());
+
+    processDhis2Dwh(startDate, endDate) {
+        var start = moment(startDate, "YYYY-MM-DD", true);
+        var end = moment(endDate, "YYYY-MM-DD", true);
+        var periods = this.getDhis2Periods(start, end);
+        periods.forEach(period => this.processDhis2DwhForPeriod(period));
+    },
+
+    processDhis2DwhSchedule() {
         var period = moment().subtract(1, "month").format("YYYYMM");
+        this.processDhis2DwhForPeriod(period);
+    },
+
+    processDhis2DwhForPeriod(period) {
+        console.log("ProcessDhis2Dwh for " + period + " started at " + new Date());
         var ou = "dimension=ou:LEVEL-5;";
         var de = "dimension=dx:JljuWsCDpma;sEtNuNusKTT;PUrg2dmCjGI;QrHtUO7UsaM;";
         var pe = "dimension=pe:" + period + ";";
@@ -37,9 +49,33 @@ module.exports = {
                     DHIS2Data.create(data);
                 });
             }
-            console.log("ProcessDhis2Dwh completed at " + new Date());
+            console.log("ProcessDhis2Dwh for " + period + " completed at " + new Date());
         }).catch(function (error) {
-            console.log("ProcessDhis2Dwh failed:" + error.message);
+            console.log("ProcessDhis2Dwh for " + period + " failed at " + new Date() + " Reason: " + error.message);
         });
+    },
+
+    getDhis2Periods(startDate, endDate) {
+        var periods = [];
+        var startPeriod = moment(startDate);
+        var endPeriod = moment(endDate);
+
+        if (startPeriod.isAfter(endPeriod)) {
+            startPeriod = moment(endDate).startOf('month');
+            endPeriod = moment(startDate).endOf('month');
+        } else {
+            startPeriod = moment(startDate).startOf('month');
+            endPeriod = moment(endDate).endOf('month');
+        }
+
+        diff = Math.ceil(endPeriod.diff(startPeriod, 'months', true));
+
+        for (var i = 0; i < diff; i++)
+        {
+            var d = startPeriod.clone().add(i, 'months');
+            periods.push(d.format("YYYYMM"));
+        }
+            
+        return periods;
     }
 }

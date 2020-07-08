@@ -3,7 +3,7 @@ var sequelize = seq.sequelize;
 var Sequelize = seq.Sequelize;
 var moment = require('moment');
 
-var Dhis2Data = sequelize.define('dhis2_data', {
+var Dhis2Data = sequelize.define('FACT_CT_DHIS2', {
 	id: { type: Sequelize.UUID, defaultValue: Sequelize.UUIDV4, primaryKey: true },
 	DHISOrgId: { type: Sequelize.STRING },
 	SiteCode: { type: Sequelize.STRING },
@@ -18,6 +18,7 @@ var Dhis2Data = sequelize.define('dhis2_data', {
 	CTX_Total: { type: Sequelize.INTEGER },
 }, {
 	timestamps: true,
+	freezeTableName: true,
 	indexes: [
 		{ unique: true, fields: ['id'] },
 		{ unique: false, fields: ['DHISOrgId'] },

@@ -42,7 +42,7 @@ app.listen(port, function() {
 var CronJob = require('cron').CronJob;
 var dhis2AnalyticsWorker = require('./workers/dhis2-analytics');
 var job = new CronJob('0 0 * * *', function() { // everyday at midnight
-	dhis2AnalyticsWorker.processDhis2Dwh();
+	dhis2AnalyticsWorker.processDhis2DwhSchedule();
 }, null, true, 'Africa/Nairobi');
 
 job.start();

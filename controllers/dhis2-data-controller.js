@@ -28,9 +28,13 @@ module.exports = {
 		});
 	},
 	reprocess(req, res) {
-		dhis2AnalyticsWorker.processDhis2Dwh();
-		res.status(200).json({
-			"status": "success"
-		});
+		if (req.query.start_date && req.query.end_date) {
+			dhis2AnalyticsWorker.processDhis2Dwh(req.query.start_date, req.query.end_date);
+			res.status(200).json({
+				"status": "success"
+			});
+		} else {
+			res.status(500).json("Missing start_date or end_date");
+		}
 	}
 };

@@ -10,6 +10,7 @@ var port = process.env.API_PORT;
 var app = express();
 var logDirectory = path.join(__dirname, 'logs')
 var router = require('./routes');
+var moment = require("moment");
 
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory)
 var accessLogStream = rfs.createStream('access.log', { interval: '1d', compress: "gzip", path: logDirectory })
@@ -41,10 +42,19 @@ app.listen(port, function() {
 
 var CronJob = require('cron').CronJob;
 var dhis2AnalyticsWorker = require('./workers/dhis2-analytics');
-var job = new CronJob('0 0 * * *', function() { // everyday at midnight
-	dhis2AnalyticsWorker.processDhis2DwhSchedule();
+
+var previousMonthPullJob = new CronJob('0 1 * * *', function() { // everyday at 1am
+	var period = moment().subtract(1, "month").format("YYYYMM"); // previous month
+    dhis2AnalyticsWorker.processDhis2DwhForPeriod(period);
 }, null, true, 'Africa/Nairobi');
 
-job.start();
+var fullPullJob = new CronJob('0 2 20 * *', function() { // every month on the 20th at 2am
+	var startDate = "2019-10-01";
+	var endDate = moment().subtract(2, "month").endOf('month').format("YYYY-MM-DD");
+	dhis2AnalyticsWorker.processDhis2Dwh(startDate, endDate);
+}, null, true, 'Africa/Nairobi');
+
+previousMonthPullJob.start();
+fullPullJob.start();
 
 module.exports = app;

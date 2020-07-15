@@ -12,11 +12,6 @@ module.exports = {
         periods.forEach(period => this.processDhis2DwhForPeriod(period));
     },
 
-    processDhis2DwhSchedule() {
-        var period = moment().subtract(1, "month").format("YYYYMM");
-        this.processDhis2DwhForPeriod(period);
-    },
-
     processDhis2DwhForPeriod(period) {
         console.log("ProcessDhis2Dwh for " + period + " started at " + new Date());
         var ou = "dimension=ou:LEVEL-5;";

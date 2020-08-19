@@ -41,20 +41,34 @@ app.listen(port, function() {
 });
 
 var CronJob = require('cron').CronJob;
-var dhis2AnalyticsWorker = require('./workers/dhis2-analytics');
+var FACT_HTS_DHIS2_Worker = require('./workers/FACT_HTS_DHIS2');
+var FACT_CT_DHIS2_Worker = require('./workers/FACT_CT_DHIS2');
 
-var previousMonthPullJob = new CronJob('0 1 * * *', function() { // everyday at 1am
+var previousMonthCTPullJob = new CronJob('0 1 * * *', function() { // everyday at 1am
 	var period = moment().subtract(1, "month").format("YYYYMM"); // previous month
-    dhis2AnalyticsWorker.processDhis2DwhForPeriod(period);
+    FACT_CT_DHIS2_Worker.processCTDhis2DwhForPeriod(period);
 }, null, true, 'Africa/Nairobi');
 
-var fullPullJob = new CronJob('0 2 20 * *', function() { // every month on the 20th at 2am
+var previousMonthHTSPullJob = new CronJob('0 2 * * *', function() { // everyday at 2am
+	var period = moment().subtract(1, "month").format("YYYYMM"); // previous month
+    FACT_HTS_DHIS2_Worker.processHTSDhis2DwhForPeriod(period);
+}, null, true, 'Africa/Nairobi');
+
+var fullCTPullJob = new CronJob('0 2 20 * *', function() { // every month on the 20th at 2am
 	var startDate = "2019-10-01";
 	var endDate = moment().subtract(2, "month").endOf('month').format("YYYY-MM-DD");
-	dhis2AnalyticsWorker.processDhis2Dwh(startDate, endDate);
+	FACT_CT_DHIS2_Worker.processCTDhis2Dwh(startDate, endDate);
 }, null, true, 'Africa/Nairobi');
 
-previousMonthPullJob.start();
-fullPullJob.start();
+var fullHTSPullJob = new CronJob('0 3 20 * *', function() { // every month on the 20th at 3am
+	var startDate = "2019-10-01";
+	var endDate = moment().subtract(2, "month").endOf('month').format("YYYY-MM-DD");
+	FACT_HTS_DHIS2_Worker.processHTSDhis2Dwh(startDate, endDate);
+}, null, true, 'Africa/Nairobi');
+
+previousMonthCTPullJob.start();
+previousMonthHTSPullJob.start();
+fullCTPullJob.start();
+fullHTSPullJob.start();
 
 module.exports = app;

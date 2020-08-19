@@ -3,7 +3,7 @@ var sequelize = seq.sequelize;
 var Sequelize = seq.Sequelize;
 var moment = require('moment');
 
-var Dhis2Data = sequelize.define('FACT_CT_DHIS2', {
+var FACT_CT_DHIS2 = sequelize.define('FACT_CT_DHIS2', {
 	id: { type: Sequelize.UUID, defaultValue: Sequelize.UUIDV4, primaryKey: true },
 	DHISOrgId: { type: Sequelize.STRING },
 	SiteCode: { type: Sequelize.STRING },
@@ -16,6 +16,10 @@ var Dhis2Data = sequelize.define('FACT_CT_DHIS2', {
 	StartedART_Total: { type: Sequelize.INTEGER },
 	CurrentOnART_Total: { type: Sequelize.INTEGER },
 	CTX_Total: { type: Sequelize.INTEGER },
+	OnART_12Months: { type: Sequelize.INTEGER },
+	NetCohort_12Months: { type: Sequelize.INTEGER },
+	VLSuppression_12Months: { type: Sequelize.INTEGER },
+	VLResultAvail_12Months: { type: Sequelize.INTEGER },
 }, {
 	timestamps: true,
 	freezeTableName: true,
@@ -31,33 +35,33 @@ var Dhis2Data = sequelize.define('FACT_CT_DHIS2', {
 	]
 });
 
-Dhis2Data.sync();
+FACT_CT_DHIS2.sync();
 
 module.exports = {
 	find: function (options) {
 		options.order = [['updatedAt', 'DESC']];
-		return Dhis2Data.findAndCountAll(options);
+		return FACT_CT_DHIS2.findAndCountAll(options);
 	},
 	create: function (body) {
 		var options = {
 			where: { DHISOrgId:body.DHISOrgId, ReportMonth_Year: body.ReportMonth_Year },
 			order: [['updatedAt', 'DESC']]
 		};
-		return Dhis2Data.findOne(options).then(function (dhis2Data) {
-			if(dhis2Data) {
+		return FACT_CT_DHIS2.findOne(options).then(function (data) {
+			if(data) {
 				body.updatedAt = moment().format("YYYY-MM-DD HH:mm:ss");
-				return dhis2Data.update(body);
+				return data.update(body);
 			} else {
-				return Dhis2Data.create(body);
+				return FACT_CT_DHIS2.create(body);
 			}
 		});
 	},
 	update: function (body) {
 		if (body.id) {
-			return Dhis2Data.findById(body.id).then(function (dhis2Data) {
-				if(dhis2Data) {
+			return FACT_CT_DHIS2.findById(body.id).then(function (data) {
+				if(data) {
 					body.updatedAt = moment().format("YYYY-MM-DD HH:mm:ss");
-					return dhis2Data.update(body);
+					return data.update(body);
 				} else {
 					return this.create(body);
 				}

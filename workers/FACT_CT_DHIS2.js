@@ -1,21 +1,22 @@
 var axios = require("axios");
 var conf = require("dotenv").config();
+var FACT_CT_DHIS2 = require("../models/FACT_CT_DHIS2");
 var moment = require("moment");
-var DHIS2Data = require("../models/dhis2-data");
+var utils = require("../config/utils");
 
 module.exports = {
 
-    processDhis2Dwh(startDate, endDate) {
+    processCTDhis2Dwh(startDate, endDate) {
         var start = moment(startDate, "YYYY-MM-DD", true);
         var end = moment(endDate, "YYYY-MM-DD", true);
-        var periods = this.getDhis2Periods(start, end);
-        periods.forEach(period => this.processDhis2DwhForPeriod(period));
+        var periods = utils.getDhis2Periods(start, end);
+        periods.forEach(period => this.processCTDhis2DwhForPeriod(period));
     },
 
-    processDhis2DwhForPeriod(period) {
-        console.log("ProcessDhis2Dwh for " + period + " started at " + new Date());
+    processCTDhis2DwhForPeriod(period) {
+        console.log("ProcessCTDhis2Dwh for " + period + " started at " + new Date());
         var ou = "dimension=ou:LEVEL-5;";
-        var de = "dimension=dx:JljuWsCDpma;sEtNuNusKTT;PUrg2dmCjGI;QrHtUO7UsaM;";
+        var de = "dimension=dx:JljuWsCDpma;sEtNuNusKTT;PUrg2dmCjGI;QrHtUO7UsaM;S1z1doLHQg1;cbrwRebovN1;RNfqUayuZP2;MR5lxj7v7Lt;";
         var pe = "dimension=pe:" + period + ";";
         var query = "/analytics?" + ou + "&" + de + "&" + pe + "&displayProperty=NAME&showHierarchy=true&tableLayout=true&columns=dx;pe&rows=ou&hideEmptyRows=true&paging=false";
         var config = {
@@ -41,36 +42,16 @@ module.exports = {
                     data.StartedART_Total = (typeof row[10] !== "undefined" && row[10].trim() !== "" ? parseInt(row[10]) : null);
                     data.CurrentOnART_Total = (typeof row[11] !== "undefined" && row[11].trim() !== "" ? parseInt(row[11]) : null);
                     data.CTX_Total = (typeof row[12] !== "undefined" && row[12].trim() !== "" ? parseInt(row[12]) : null);
-                    DHIS2Data.create(data);
+                    data.OnART_12Months = (typeof row[13] !== "undefined" && row[13].trim() !== "" ? parseInt(row[13]) : null);
+                    data.NetCohort_12Months = (typeof row[14] !== "undefined" && row[14].trim() !== "" ? parseInt(row[14]) : null);
+                    data.VLSuppression_12Months = (typeof row[15] !== "undefined" && row[15].trim() !== "" ? parseInt(row[15]) : null);
+                    data.VLResultAvail_12Months = (typeof row[16] !== "undefined" && row[16].trim() !== "" ? parseInt(row[16]) : null);
+                    FACT_CT_DHIS2.create(data);
                 });
             }
-            console.log("ProcessDhis2Dwh for " + period + " completed at " + new Date());
+            console.log("ProcessCTDhis2Dwh for " + period + " completed at " + new Date());
         }).catch(function (error) {
-            console.log("ProcessDhis2Dwh for " + period + " failed at " + new Date() + " Reason: " + error.message);
+            console.log("ProcessCTDhis2Dwh for " + period + " failed at " + new Date() + " Reason: " + error.message);
         });
-    },
-
-    getDhis2Periods(startDate, endDate) {
-        var periods = [];
-        var startPeriod = moment(startDate);
-        var endPeriod = moment(endDate);
-
-        if (startPeriod.isAfter(endPeriod)) {
-            startPeriod = moment(endDate).startOf('month');
-            endPeriod = moment(startDate).endOf('month');
-        } else {
-            startPeriod = moment(startDate).startOf('month');
-            endPeriod = moment(endDate).endOf('month');
-        }
-
-        diff = Math.ceil(endPeriod.diff(startPeriod, 'months', true));
-
-        for (var i = 0; i < diff; i++)
-        {
-            var d = startPeriod.clone().add(i, 'months');
-            periods.push(d.format("YYYYMM"));
-        }
-            
-        return periods;
     }
 }

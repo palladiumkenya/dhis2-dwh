@@ -35,7 +35,7 @@ var FACT_CT_DHIS2 = sequelize.define('FACT_CT_DHIS2', {
 	]
 });
 
-FACT_CT_DHIS2.sync();
+FACT_CT_DHIS2.sync({ force: true });
 
 module.exports = {
 	find: function (options) {

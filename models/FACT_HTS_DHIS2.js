@@ -29,7 +29,7 @@ var FACT_HTS_DHIS2 = sequelize.define('FACT_HTS_DHIS2', {
 	]
 });
 
-FACT_HTS_DHIS2.sync({ force: true });
+FACT_HTS_DHIS2.sync();
 
 module.exports = {
 	find: function (options) {

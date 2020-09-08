@@ -1,11 +1,14 @@
 var express =  require('express');
 var router = express.Router();
-var FACT_HTS_DHIS2_Controller = require('./controllers/FACT_HTS_DHIS2');
+var Status_Controller = require('./controllers/status');
 var FACT_CT_DHIS2_Controller = require('./controllers/FACT_CT_DHIS2');
+var FACT_HTS_DHIS2_Controller = require('./controllers/FACT_HTS_DHIS2');
 
 router.all('*', checkApiKey);
 
 router.get('/', function(req, res) { res.status(200).json({ status:'OK', message:'DHIS2 to Data Warehouse API' }); });
+
+router.get('/status', Status_Controller.index);
 
 router.get('/hts', FACT_HTS_DHIS2_Controller.index);
 router.get('/hts/reprocess', FACT_HTS_DHIS2_Controller.reprocess);

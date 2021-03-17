@@ -9,8 +9,7 @@ module.exports = {
 				"status": "success",
 				"meta": {
 					"total": data.count
-				},
-				"fact_ct_dhis2": data.rows
+				}
 			});
 		}).catch(function (error) {
 			res.status(500).json(error.message);

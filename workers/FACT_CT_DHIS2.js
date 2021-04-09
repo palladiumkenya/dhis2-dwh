@@ -14,7 +14,6 @@ module.exports = {
     },
 
     processCTDhis2DwhForPeriod(period) {
-        console.log("ProcessCTDhis2Dwh for " + period + " started at " + new Date());
         var ou = "dimension=ou:LEVEL-5;";
         var de = "dimension=dx:JljuWsCDpma;sEtNuNusKTT;PUrg2dmCjGI;QrHtUO7UsaM;S1z1doLHQg1;cbrwRebovN1;RNfqUayuZP2;MR5lxj7v7Lt;";
         var pe = "dimension=pe:" + period + ";";
@@ -49,7 +48,6 @@ module.exports = {
                     FACT_CT_DHIS2.create(data);
                 });
             }
-            console.log("ProcessCTDhis2Dwh for " + period + " completed at " + new Date());
         }).catch(function (error) {
             console.log("ProcessCTDhis2Dwh for " + period + " failed at " + new Date() + " Reason: " + error.message);
         });

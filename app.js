@@ -44,12 +44,12 @@ var CronJob = require('cron').CronJob;
 var FACT_HTS_DHIS2_Worker = require('./workers/FACT_HTS_DHIS2');
 var FACT_CT_DHIS2_Worker = require('./workers/FACT_CT_DHIS2');
 
-var previousMonthCTPullJob = new CronJob('0 1 * * *', function() { // everyday at 1am
+var previousMonthCTPullJob = new CronJob('0,30 1 * * *', function() { // everyday at 1am
 	var period = moment().subtract(1, "month").format("YYYYMM"); // previous month
     FACT_CT_DHIS2_Worker.processCTDhis2DwhForPeriod(period);
 }, null, true, 'Africa/Nairobi');
 
-var previousMonthHTSPullJob = new CronJob('0 2 * * *', function() { // everyday at 2am
+var previousMonthHTSPullJob = new CronJob('0,30 2 * * *', function() { // everyday at 2am
 	var period = moment().subtract(1, "month").format("YYYYMM"); // previous month
     FACT_HTS_DHIS2_Worker.processHTSDhis2DwhForPeriod(period);
 }, null, true, 'Africa/Nairobi');

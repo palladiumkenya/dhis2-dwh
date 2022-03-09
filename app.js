@@ -43,6 +43,7 @@ app.listen(port, function() {
 var CronJob = require('cron').CronJob;
 var FACT_HTS_DHIS2_Worker = require('./workers/FACT_HTS_DHIS2');
 var FACT_CT_DHIS2_Worker = require('./workers/FACT_CT_DHIS2');
+const FACT_PMTCT_DHIS2_Worker = require("./workers/FACT_PMTCT_DHIS2");
 
 var previousMonthCTPullJob = new CronJob('0,30 1 * * *', function() { // everyday at 1am
 	var period = moment().subtract(1, "month").format("YYYYMM"); // previous month
@@ -54,11 +55,19 @@ var previousMonthHTSPullJob = new CronJob('0,30 2 * * *', function() { // everyd
     FACT_HTS_DHIS2_Worker.processHTSDhis2DwhForPeriod(period);
 }, null, true, 'Africa/Nairobi');
 
-var fullCTPullJob = new CronJob('0 2 20,22 * *', function() { // every month on the 20th at 2am
-	var startDate = "2019-10-01";
-	var endDate = moment().subtract(2, "month").endOf('month').format("YYYY-MM-DD");
-	FACT_CT_DHIS2_Worker.processCTDhis2Dwh(startDate, endDate);
+var previousMonthPMTCTPullJob = new CronJob('0,30 4 * * *', function() {// everyday at 4am
+	var period = moment().subtract(1, "month").format("YYYYMM"); // previous month
+    FACT_PMTCT_DHIS2_Worker.processPMTCTDhis2DwhForPeriod(period);
 }, null, true, 'Africa/Nairobi');
+
+var fullCTPullJob = new CronJob("0 2 20,22 * *", function () {// every month on the 20th at 2am
+	var startDate = "2019-10-01";
+	var endDate = moment()
+		.subtract(2, "month")
+		.endOf("month")
+		.format("YYYY-MM-DD");
+	FACT_CT_DHIS2_Worker.processCTDhis2Dwh(startDate, endDate);
+}, null, true, "Africa/Nairobi");
 
 var fullHTSPullJob = new CronJob('0 3 20,22 * *', function() { // every month on the 20th at 3am
 	var startDate = "2019-10-01";
@@ -66,9 +75,17 @@ var fullHTSPullJob = new CronJob('0 3 20,22 * *', function() { // every month on
 	FACT_HTS_DHIS2_Worker.processHTSDhis2Dwh(startDate, endDate);
 }, null, true, 'Africa/Nairobi');
 
+var fullPMTCTPullJob = new CronJob('30 3 20,22 * *', function() { // every month on the 20th at 3am
+	var startDate = "2019-10-01";
+	var endDate = moment().subtract(2, "month").endOf('month').format("YYYY-MM-DD");
+	FACT_PMTCT_DHIS2_Worker.processPMTCTDhis2Dwh(startDate, endDate);
+}, null, true, 'Africa/Nairobi');
+
 previousMonthCTPullJob.start();
 previousMonthHTSPullJob.start();
+previousMonthPMTCTPullJob.start();
 fullCTPullJob.start();
 fullHTSPullJob.start();
+fullPMTCTPullJob.start();
 
 module.exports = app;

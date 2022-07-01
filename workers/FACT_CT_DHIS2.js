@@ -16,7 +16,7 @@ module.exports = {
     processCTDhis2DwhForPeriod(period) {
         var ou = "dimension=ou:LEVEL-5;";
         var de =
-			"dimension=dx:JljuWsCDpma;sEtNuNusKTT;PUrg2dmCjGI;QrHtUO7UsaM;S1z1doLHQg1;cbrwRebovN1;RNfqUayuZP2;MR5lxj7v7Lt;mACm1JUzeLT;Hbc2qRi0U5x;LC2OqnUC5Sn;jthpt5cVV9c;yWkSi8L3qGm;DaNcGZnkclz;K59f8nZ5vhy;zNCSlBKbS6d;SCMKsiNj6c5;Nv4OkbdDvmm;";
+			"dimension=dx:JljuWsCDpma;sEtNuNusKTT;PUrg2dmCjGI;QrHtUO7UsaM;S1z1doLHQg1;cbrwRebovN1;RNfqUayuZP2;MR5lxj7v7Lt;mACm1JUzeLT;Hbc2qRi0U5x;LC2OqnUC5Sn;jthpt5cVV9c;yWkSi8L3qGm;DaNcGZnkclz;K59f8nZ5vhy;zNCSlBKbS6d;SCMKsiNj6c5;Nv4OkbdDvmm;SJL4k6Gl53C;wbJOu4h2SSz;Jbu4if6gtDp;GSEmLUnrvzj;oOOnacUi9Jm;AQsTt7jtKbt;e93GKJTHKAX;EhZQp3PTA3C;pR7VzBydoj3;yNCUlEYkmyA;";
         var pe = "dimension=pe:" + period + ";";
         var query = "/analytics?" + ou + "&" + de + "&" + pe + "&displayProperty=NAME&showHierarchy=true&tableLayout=true&columns=dx;pe&rows=ou&hideEmptyRows=true&paging=false";
         var config = {
@@ -66,6 +66,26 @@ module.exports = {
 						typeof row[25] !== "undefined" && row[25].trim() !== "" ? parseInt(row[25]) : null;
                     data.Start_ART_25_Plus_F =
 						typeof row[26] !== "undefined" && row[26].trim() !== "" ? parseInt(row[26]) : null;
+                    data.On_ART_Under_1 =
+						typeof row[27] !== "undefined" && row[27].trim() !== "" ? parseInt(row[27]) : null;
+                    data.On_ART_1_9 =
+						typeof row[28] !== "undefined" && row[28].trim() !== "" ? parseInt(row[28]) : null;
+                    data.On_ART_10_14_M =
+						typeof row[29] !== "undefined" && row[29].trim() !== "" ? parseInt(row[29]) : null;
+                    data.On_ART_10_14_F =
+						typeof row[30] !== "undefined" && row[30].trim() !== "" ? parseInt(row[30]) : null;
+                    data.On_ART_15_19_M =
+						typeof row[31] !== "undefined" && row[31].trim() !== "" ? parseInt(row[31]) : null;
+                    data.On_ART_15_19_F =
+						typeof row[32] !== "undefined" && row[32].trim() !== "" ? parseInt(row[32]) : null;
+                    data.On_ART_20_24_M =
+						typeof row[33] !== "undefined" && row[33].trim() !== "" ? parseInt(row[33]) : null;
+                    data.On_ART_20_24_F =
+						typeof row[34] !== "undefined" && row[34].trim() !== "" ? parseInt(row[34]) : null;
+                    data.On_ART_25_Plus_M =
+						typeof row[35] !== "undefined" && row[35].trim() !== "" ? parseInt(row[35]) : null;
+                    data.On_ART_25_Plus_F =
+						typeof row[36] !== "undefined" && row[36].trim() !== "" ? parseInt(row[36]) : null;
                     FACT_CT_DHIS2.create(data);
                 });
             }

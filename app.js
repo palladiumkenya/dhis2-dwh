@@ -45,13 +45,13 @@ var FACT_HTS_DHIS2_Worker = require('./workers/FACT_HTS_DHIS2');
 var FACT_CT_DHIS2_Worker = require('./workers/FACT_CT_DHIS2');
 const FACT_PMTCT_DHIS2_Worker = require("./workers/FACT_PMTCT_DHIS2");
 
-var previousMonthCTPullJob = new CronJob('0,30 1 * * *', function() { // everyday at 1am
+var previousMonthCTPullJob = new CronJob('0,30 5 * * *', function() { // everyday at 1am
 	var period = moment().subtract(1, "month").format("YYYYMM"); // previous month
     FACT_CT_DHIS2_Worker.processCTDhis2DwhForPeriod(period);
 }, null, true, 'Africa/Nairobi');
 
-var previousMonthHTSPullJob = new CronJob('0,30 2 * * *', function() { // everyday at 2am
 	var period = moment().subtract(1, "month").format("YYYYMM"); // previous month
+var previousMonthHTSPullJob = new CronJob('0,30 6 * * *', function() { // everyday at 2am
     FACT_HTS_DHIS2_Worker.processHTSDhis2DwhForPeriod(period);
 }, null, true, 'Africa/Nairobi');
 
@@ -60,7 +60,7 @@ var previousMonthPMTCTPullJob = new CronJob('0,30 4 * * *', function() {// every
     FACT_PMTCT_DHIS2_Worker.processPMTCTDhis2DwhForPeriod(period);
 }, null, true, 'Africa/Nairobi');
 
-var fullCTPullJob = new CronJob("0 2 20,22 * *", function () {// every month on the 20th at 2am
+var fullCTPullJob = new CronJob("0 5 20,22 * *", function () {// every month on the 20th at 2am
 	var startDate = "2019-10-01";
 	var endDate = moment()
 		.subtract(2, "month")
@@ -69,13 +69,13 @@ var fullCTPullJob = new CronJob("0 2 20,22 * *", function () {// every month on 
 	FACT_CT_DHIS2_Worker.processCTDhis2Dwh(startDate, endDate);
 }, null, true, "Africa/Nairobi");
 
-var fullHTSPullJob = new CronJob('0 3 20,22 * *', function() { // every month on the 20th at 3am
+var fullHTSPullJob = new CronJob('0 6 20,22 * *', function() { // every month on the 20th at 3am
 	var startDate = "2019-10-01";
 	var endDate = moment().subtract(2, "month").endOf('month').format("YYYY-MM-DD");
 	FACT_HTS_DHIS2_Worker.processHTSDhis2Dwh(startDate, endDate);
 }, null, true, 'Africa/Nairobi');
 
-var fullPMTCTPullJob = new CronJob('30 3 20,22 * *', function() { // every month on the 20th at 3am
+var fullPMTCTPullJob = new CronJob('30 4 20,22 * *', function() { // every month on the 20th at 3am
 	var startDate = "2019-10-01";
 	var endDate = moment().subtract(2, "month").endOf('month').format("YYYY-MM-DD");
 	FACT_PMTCT_DHIS2_Worker.processPMTCTDhis2Dwh(startDate, endDate);

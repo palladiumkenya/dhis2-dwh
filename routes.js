@@ -3,6 +3,7 @@ var router = express.Router();
 var Status_Controller = require('./controllers/status');
 var FACT_CT_DHIS2_Controller = require('./controllers/FACT_CT_DHIS2');
 var FACT_HTS_DHIS2_Controller = require('./controllers/FACT_HTS_DHIS2');
+const FACT_PMTCT_DHIS2_Controller = require("./controllers/FACT_PMTCT_DHIS2");
 
 router.all('*', checkApiKey);
 
@@ -15,6 +16,9 @@ router.get('/hts/reprocess', FACT_HTS_DHIS2_Controller.reprocess);
 
 router.get('/ct', FACT_CT_DHIS2_Controller.index);
 router.get('/ct/reprocess', FACT_CT_DHIS2_Controller.reprocess);
+
+router.get('/pmtct', FACT_PMTCT_DHIS2_Controller.index);
+router.get('/pmtct/reprocess', FACT_PMTCT_DHIS2_Controller.reprocess);
 
 function checkApiKey(req, res, next) {
 	if(req.path == '/' || req.query.api_key == process.env.API_KEY || req.body.api_key == process.env.API_KEY) {

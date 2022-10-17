@@ -9,7 +9,6 @@ pids
 storage/uploads
 typings/
 vendor
-.env
 .eslintcache
 .git
 .grunt

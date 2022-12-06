@@ -2,7 +2,14 @@ const Sequelize = require('sequelize');
 const options = {
 	host: process.env.DATABASE_HOST,
 	dialect: process.env.DATABASE_DIALECT,
-	logging: false
+	logging: false,
+	pool: {
+		max: 20,
+		min: 0,
+		acquire: 60000,
+		idle: 10000,
+		connectTimeout: 60000,
+	},
 };
 if (options.dialect === 'mssql') {
 	options['dialectOptions'] = { options: { encrypt: true } };

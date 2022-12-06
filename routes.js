@@ -23,12 +23,12 @@ router.get('/pmtct/reprocess', FACT_PMTCT_DHIS2_Controller.reprocess);
 function checkApiKey(req, res, next) {
 	if(req.path == '/' || req.query.api_key == process.env.API_KEY || req.body.api_key == process.env.API_KEY) {
 		return next();
-  	} else {
-  		res.status(550).json({
+	} else {
+		res.status(550).json({
 			"status": "error",
 			"message": "permission denied. no api_key"
 		});
-  	}
+	}
 }
 
 module.exports = router;
